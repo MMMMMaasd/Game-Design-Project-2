@@ -20,11 +20,10 @@ var if_init_dot_selected_2: bool;
 var player: int
 var player_1_move: Node
 var player_2_move: Node
-
+var player_1_win: bool
+var player_2_win: bool
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	click_tolerance = 5
-	print(click_tolerance)
 	if_init_dot_selected_1 = false
 	if_init_dot_selected_2 = false
 	player = 1
@@ -57,20 +56,32 @@ func _input(event: InputEvent) -> void:
 					for cross_point in cross_points:
 						if(event.position.distance_to(cross_point) <= click_tolerance):
 							print(board_point_pos)
-							if(board_status[board_point_pos.y][board_point_pos.x] == 0):
+							# 2= p1, 3 = p2
+							if(board_status[board_point_pos.y][board_point_pos.x] == 0 ||board_status[board_point_pos.y][board_point_pos.x] == 2 ||board_status[board_point_pos.y][board_point_pos.x] == 3):
 								print("111")
-								if player == 1:
+								if(player == 1):
 									draw_connect_line(player, player_1_current_pos, cross_point)
 									player_1_current_pos = cross_point
 									player_1_move.position = player_1_current_pos
+									print("yes 1")
+									if(board_status[board_point_pos.y][board_point_pos.x] == 2):
+										board_status[board_point_pos.y][board_point_pos.x] = 4
+									else:
+										board_status[board_point_pos.y][board_point_pos.x] = player
 								else:
 									draw_connect_line(player, player_2_current_pos, cross_point)
 									player_2_current_pos = cross_point
 									player_2_move.position = player_2_current_pos
-								board_status[board_point_pos.y][board_point_pos.x] = player
+									print("yes 2")
+									if (board_status[board_point_pos.y][board_point_pos.x] == 3 && player == 2):
+										board_status[board_point_pos.y][board_point_pos.x] = 5
+									else:
+										board_status[board_point_pos.y][board_point_pos.x] = player
+										
 								player = -player
-								print(board_status)
-							print("yes")
+								for row in board_status:
+									print(row)
+							check_winner()
 				else:
 					if player == 1:
 						for init_dot in init_dots_pos_1:
@@ -93,14 +104,23 @@ func _input(event: InputEvent) -> void:
 								add_child(player_2_move)
 								player = -player
 
-func populate_grid_dots():
-	for x in range(11):
-		for y in range(11):
-			var world_pos = Vector2i((x * cell_size) + 3, (y * cell_size) + 4)
-			var neutral_dot = yellow_dot_scene.instantiate()  
-			neutral_dot.position = world_pos
-			add_child(neutral_dot)
-
+func check_winner():
+	#you win if there are 3 dots on the board with 4 (player 1) or 5 (player 2)
+	var p1_count = 0
+	var p2_count = 0
+	for row in board_status:
+		for cell in row:
+			if cell == 4:
+				p1_count += 1
+			elif cell == 5:
+				p2_count += 1
+		if(p1_count == 3):
+			print("Player 1 Wins!")
+			get_tree().quit()
+		if(p2_count == 3):
+			print("Player 1 Wins!")
+			get_tree().quit()
+	
 func create_dot(player, position):
 	if(player == 1):
 		var new_dot = yellow_dot_scene.instantiate()
@@ -122,11 +142,12 @@ func init_dots(): #make sure that points don't form on the border
 			var world_pos = Vector2i((random_x * cell_size) + 3, (random_y * cell_size) + 4)	
 			if board_status[board_point_pos.y][board_point_pos.x] == 0:
 				print(board_point_pos)
-				board_status[board_point_pos.y][board_point_pos.x] = player
 				create_dot(player, world_pos)		
 				if player == 1:
+					board_status[board_point_pos.y][board_point_pos.x] = 2
 					init_dots_pos_1.append(world_pos)
 				else:
+					board_status[board_point_pos.y][board_point_pos.x] = 3
 					init_dots_pos_2.append(world_pos)
 				player = -player  
 				valid_position_found = true
