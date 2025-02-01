@@ -1,3 +1,20 @@
-[gd_scene format=3 uid="uid://dagidjc111mjd"]
+[gd_scene load_steps=7 format=3 uid="uid://dagidjc111mjd"]
+
+[ext_resource type="PackedScene" uid="uid://bhif1lnuo2bws" path="res://scenes/board.tscn" id="1_mel3o"]
+[ext_resource type="Script" path="res://scenes/main.gd" id="1_n0hef"]
+[ext_resource type="PackedScene" uid="uid://bjc6svafpdalk" path="res://scenes/yellowDot.tscn" id="2_sd8f2"]
+[ext_resource type="PackedScene" uid="uid://b6cjbmcfmvr7u" path="res://scenes/purpleDot.tscn" id="3_qi1dr"]
+[ext_resource type="PackedScene" uid="uid://cefu5qbsk6yxy" path="res://scenes/yellowHighlightDot.tscn" id="4_6o5a3"]
+[ext_resource type="PackedScene" uid="uid://cg5o1q6wd6vby" path="res://scenes/purpleHighlightDot.tscn" id="5_wn8r2"]
 
 [node name="Main" type="Node2D"]
+position = Vector2(1, 0)
+script = ExtResource("1_n0hef")
+click_tolerance = 10
+yellow_dot_scene = ExtResource("2_sd8f2")
+purple_dot_scene = ExtResource("3_qi1dr")
+player_1_move_dot_scene = ExtResource("4_6o5a3")
+player_2_move_dot_scene = ExtResource("5_wn8r2")
+
+[node name="Board" parent="." instance=ExtResource("1_mel3o")]
+position = Vector2(394, 395)

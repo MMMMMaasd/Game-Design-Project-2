@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjc6svafpdalk"]
+
+[ext_resource type="Texture2D" uid="uid://ck1ekihdavdoh" path="res://images/yellowDot.png" id="1_ypnve"]
+
+[node name="Sprite2D" type="Sprite2D"]
+position = Vector2(51, 50)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("1_ypnve")

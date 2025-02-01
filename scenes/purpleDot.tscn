@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6cjbmcfmvr7u"]
+
+[ext_resource type="Texture2D" uid="uid://b3vt4qeq6ofxr" path="res://images/purpleDot.png" id="1_8l5a6"]
+
+[node name="Sprite2D" type="Sprite2D"]
+position = Vector2(1, 0)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("1_8l5a6")

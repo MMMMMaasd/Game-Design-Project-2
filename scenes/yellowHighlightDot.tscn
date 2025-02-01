@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cefu5qbsk6yxy"]
+
+[ext_resource type="Texture2D" uid="uid://diy3e101iq7po" path="res://images/yellowHighlightDot.png" id="1_io8xt"]
+
+[node name="yellowHighlightDot" type="Sprite2D"]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_io8xt")
