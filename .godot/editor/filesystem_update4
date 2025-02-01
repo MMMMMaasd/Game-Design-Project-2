@@ -1,0 +1,10 @@
+res://scenes/main.tscn
+res://scenes/player_1.gd
+res://scenes/p_1_n_1.gd
+res://scenes/board.tscn
+res://scenes/main.gd
+res://scenes/purpleHighlightDot.tscn
+res://scenes/purpleDot.tscn
+res://scenes/yellowHighlightDot.tscn
+res://scenes/yellowDot.tscn
+res://scenes/whiteHighlightDot.tscn
