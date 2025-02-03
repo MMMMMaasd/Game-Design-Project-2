@@ -54,6 +54,7 @@ func _input(event: InputEvent) -> void:
 						if event.position.distance_to(cross_point) <= click_tolerance:
 							var target_pos = Vector2i(cross_point / cell_size)
 							if is_valid_move(target_pos):
+								# Move player's current position
 								remaining_moves -= 1
 								if player == 1:
 									draw_connect_line(player, player_1_current_pos, cross_point)
@@ -79,6 +80,7 @@ func _input(event: InputEvent) -> void:
 									print(row)
 							check_winner()
 				else:
+					# If statements to select starting dot
 					if player == 1:
 						for init_dot in init_dots_pos_1:
 							var target_dot = (init_dot / cell_size)
@@ -103,7 +105,15 @@ func _input(event: InputEvent) -> void:
 								board_status[target_dot.y][target_dot.x] = 5
 								switch_turn()
 								if_init_dot_selected_2 = true
+	# Spacebar to end turn early
+	if event is InputEventKey:
+		if event.pressed and event.keycode == KEY_SPACE:
+			if if_init_dot_selected_1 and if_init_dot_selected_2:
+				print("Player " + str(player) + " ends their turn early.")
+				remaining_moves = 0
+				switch_turn()
 
+# Checks if move is valid
 func is_valid_move(target_pos) -> bool:
 	var current_pos = Vector2i(player_1_current_pos / cell_size) if player == 1 else Vector2i(player_2_current_pos / cell_size)
 	var dx = abs(target_pos.x - current_pos.x)
@@ -121,6 +131,7 @@ func is_valid_move(target_pos) -> bool:
 	print("TOO FAR")
 	return false
 
+# Handles switching between players
 func switch_turn():
 	player = -player
 	if is_player_blocked(player):
@@ -130,6 +141,7 @@ func switch_turn():
 		remaining_moves = 4
 		print("Player " + str(player) + "'s turn. Moves this turn: " + str(remaining_moves))
 
+# Checks if player has no valid moves, then skips their turn
 func is_player_blocked(player) -> bool:
 	var current_pos = Vector2i(player_1_current_pos / cell_size) if player == 1 else Vector2i(player_2_current_pos / cell_size)
 	var directions = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
