@@ -63,7 +63,7 @@ func _input(event: InputEvent) -> void:
 									if board_status[target_pos.y][target_pos.x] == 2:
 										board_status[target_pos.y][target_pos.x] = 4
 									else:
-										board_status[target_pos.y][target_pos.x] = 1
+										board_status[target_pos.y][target_pos.x] = player
 								else:
 									draw_connect_line(player, player_2_current_pos, cross_point)
 									player_2_current_pos = cross_point
@@ -72,12 +72,12 @@ func _input(event: InputEvent) -> void:
 									if board_status[target_pos.y][target_pos.x] == 3:
 										board_status[target_pos.y][target_pos.x] = 5
 									else:
-										board_status[target_pos.y][target_pos.x] = -1
-								for row in board_status:
-									print(row)
-								check_winner()
+										board_status[target_pos.y][target_pos.x] = player
 								if remaining_moves == 0:
 									switch_turn()
+								for row in board_status:
+									print(row)
+							check_winner()
 				else:
 					if player == 1:
 						for init_dot in init_dots_pos_1:
@@ -117,14 +117,29 @@ func is_valid_move(target_pos) -> bool:
 			return true
 		else:
 			print("PATH BLOCKED")
+			return false
 	print("TOO FAR")
 	return false
 
 func switch_turn():
 	player = -player
+	if is_player_blocked(player):
+		print("Player " + str(player) + " is blocked and skips their turn.")
+		player = -player
 	if if_init_dot_selected_1 || if_init_dot_selected_2:
 		remaining_moves = randi_range(1, 6)  # Random number of moves (1-6)
 		print("Player " + str(player) + "'s turn. Moves this turn: " + str(remaining_moves))
+
+func is_player_blocked(player) -> bool:
+	var current_pos = Vector2i(player_1_current_pos / cell_size) if player == 1 else Vector2i(player_2_current_pos / cell_size)
+	var directions = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
+	
+	for dir in directions:
+		var new_pos = current_pos + dir
+		if new_pos.x >= 0 and new_pos.x < 11 and new_pos.y >= 0 and new_pos.y < 11:
+			if board_status[new_pos.y][new_pos.x] == 0 or board_status[new_pos.y][new_pos.x] == (2 if player == 1 else 3):
+				return false
+	return true
 
 func check_winner():
 	var p1_count = 0
