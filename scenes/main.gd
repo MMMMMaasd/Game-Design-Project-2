@@ -48,32 +48,29 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			if event.position.x < board_size:
-				var board_point_pos = Vector2i(event.position / cell_size)
-				# Existing bug where clicking top left of cross point gave wrong coordinate
-				print("event.position: " + str(event.position))
-				print("board_point_pos: " + str(board_point_pos))
 				if if_init_dot_selected_1 and if_init_dot_selected_2:
 					for cross_point in cross_points:
 						if event.position.distance_to(cross_point) <= click_tolerance:
-							if is_valid_move(cross_point):
+							var target_pos = Vector2i(cross_point / cell_size)
+							if is_valid_move(target_pos):
 								if(player == 1):
 									draw_connect_line(player, player_1_current_pos, cross_point)
 									player_1_current_pos = cross_point
 									player_1_move.position = player_1_current_pos
 									print("Player 1 Moves")
-									if(board_status[board_point_pos.y][board_point_pos.x] == 2):
-										board_status[board_point_pos.y][board_point_pos.x] = 4
+									if(board_status[target_pos.y][target_pos.x] == 2):
+										board_status[target_pos.y][target_pos.x] = 4
 									else:
-										board_status[board_point_pos.y][board_point_pos.x] = player
+										board_status[target_pos.y][target_pos.x] = player
 								else:
 									draw_connect_line(player, player_2_current_pos, cross_point)
 									player_2_current_pos = cross_point
 									player_2_move.position = player_2_current_pos
 									print("Player 2 Moves")
-									if (board_status[board_point_pos.y][board_point_pos.x] == 3):
-										board_status[board_point_pos.y][board_point_pos.x] = 5
+									if (board_status[target_pos.y][target_pos.x] == 3):
+										board_status[target_pos.y][target_pos.x] = 5
 									else:
-										board_status[board_point_pos.y][board_point_pos.x] = player
+										board_status[target_pos.y][target_pos.x] = player
 								player = -player
 								for row in board_status:
 									print(row)
@@ -81,6 +78,7 @@ func _input(event: InputEvent) -> void:
 				else:
 					if player == 1:
 						for init_dot in init_dots_pos_1:
+							var target_dot = (init_dot / cell_size)
 							if event.position.distance_to(init_dot) <= click_tolerance:
 								print("Player 1 Start")
 								if_init_dot_selected_1 = true
@@ -88,10 +86,11 @@ func _input(event: InputEvent) -> void:
 								player_1_move = player_1_move_dot_scene.instantiate()
 								player_1_move.position = init_dot
 								add_child(player_1_move)
-								board_status[board_point_pos.y][board_point_pos.x] = 4
+								board_status[target_dot.y][target_dot.x] = 4
 								player = -player
 					else:
 						for init_dot in init_dots_pos_2:
+							var target_dot = (init_dot / cell_size)
 							if event.position.distance_to(init_dot) <= click_tolerance:
 								print("Player 2 Start")
 								if_init_dot_selected_2 = true
@@ -99,11 +98,10 @@ func _input(event: InputEvent) -> void:
 								player_2_move = player_2_move_dot_scene.instantiate()
 								player_2_move.position = init_dot
 								add_child(player_2_move)
-								board_status[board_point_pos.y][board_point_pos.x] = 5
+								board_status[target_dot.y][target_dot.x] = 5
 								player = -player
 
-func is_valid_move(cross_point) -> bool:
-	var target_pos = Vector2i(cross_point / cell_size)
+func is_valid_move(target_pos) -> bool:
 	var current_pos = Vector2i(player_1_current_pos / cell_size) if player == 1 else Vector2i(player_2_current_pos / cell_size)
 	var dx = abs(target_pos.x - current_pos.x)
 	var dy = abs(target_pos.y - current_pos.y)
