@@ -49,21 +49,18 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			if event.position.x < board_size:
 				var board_point_pos = Vector2i(event.position / cell_size)
-				#print("here")
-				#print(event.position)
-				#print(cell_size)
+				# Existing bug where clicking top left of cross point gave wrong coordinate
+				print("event.position: " + str(event.position))
+				print("board_point_pos: " + str(board_point_pos))
 				if if_init_dot_selected_1 and if_init_dot_selected_2:
 					for cross_point in cross_points:
-						if(event.position.distance_to(cross_point) <= click_tolerance):
-							print(board_point_pos)
-							# 2= p1, 3 = p2
-							if(board_status[board_point_pos.y][board_point_pos.x] == 0 ||board_status[board_point_pos.y][board_point_pos.x] == 2 ||board_status[board_point_pos.y][board_point_pos.x] == 3):
-								print("111")
+						if event.position.distance_to(cross_point) <= click_tolerance:
+							if is_valid_move(cross_point):
 								if(player == 1):
 									draw_connect_line(player, player_1_current_pos, cross_point)
 									player_1_current_pos = cross_point
 									player_1_move.position = player_1_current_pos
-									print("yes 1")
+									print("Player 1 Moves")
 									if(board_status[board_point_pos.y][board_point_pos.x] == 2):
 										board_status[board_point_pos.y][board_point_pos.x] = 4
 									else:
@@ -72,12 +69,11 @@ func _input(event: InputEvent) -> void:
 									draw_connect_line(player, player_2_current_pos, cross_point)
 									player_2_current_pos = cross_point
 									player_2_move.position = player_2_current_pos
-									print("yes 2")
-									if (board_status[board_point_pos.y][board_point_pos.x] == 3 && player == 2):
+									print("Player 2 Moves")
+									if (board_status[board_point_pos.y][board_point_pos.x] == 3):
 										board_status[board_point_pos.y][board_point_pos.x] = 5
 									else:
 										board_status[board_point_pos.y][board_point_pos.x] = player
-										
 								player = -player
 								for row in board_status:
 									print(row)
@@ -85,24 +81,52 @@ func _input(event: InputEvent) -> void:
 				else:
 					if player == 1:
 						for init_dot in init_dots_pos_1:
-							if(event.position.distance_to(init_dot) <= click_tolerance):
-								print("1_start")
+							if event.position.distance_to(init_dot) <= click_tolerance:
+								print("Player 1 Start")
 								if_init_dot_selected_1 = true
 								player_1_current_pos = init_dot
 								player_1_move = player_1_move_dot_scene.instantiate()
 								player_1_move.position = init_dot
 								add_child(player_1_move)
+								board_status[board_point_pos.y][board_point_pos.x] = 4
 								player = -player
 					else:
 						for init_dot in init_dots_pos_2:
-							if(event.position.distance_to(init_dot) <= click_tolerance):
-								print("2_start")
+							if event.position.distance_to(init_dot) <= click_tolerance:
+								print("Player 2 Start")
 								if_init_dot_selected_2 = true
 								player_2_current_pos = init_dot
 								player_2_move = player_2_move_dot_scene.instantiate()
 								player_2_move.position = init_dot
 								add_child(player_2_move)
+								board_status[board_point_pos.y][board_point_pos.x] = 5
 								player = -player
+
+func is_valid_move(cross_point) -> bool:
+	var target_pos = Vector2i(cross_point / cell_size)
+	var current_pos = Vector2i(player_1_current_pos / cell_size) if player == 1 else Vector2i(player_2_current_pos / cell_size)
+	var dx = abs(target_pos.x - current_pos.x)
+	var dy = abs(target_pos.y - current_pos.y)
+	print("current_pos: "+str(current_pos))
+	print("target_pos: "+str(target_pos))
+	print("dx: "+str(dx))
+	print("dy: "+str(dy))
+	
+	# Check if the move is horizontal or vertical and within 1-3 spaces
+	if (dx == 0 and dy <= 3) or (dy == 0 and dx <= 3):
+		# Check if the path is clear and doesn't cross itself or the opponent's path
+		for i in range(1, max(dx, dy) + 1):
+			var check_pos = Vector2i(
+				current_pos.x + i * sign(target_pos.x - current_pos.x),
+				current_pos.y + i * sign(target_pos.y - current_pos.y)
+			)
+			if board_status[check_pos.y][check_pos.x] > 3 and board_status[check_pos.y][check_pos.x] != player:
+				print("SPOT OCCUPIED")
+				return false
+		print("VALID")
+		return true
+	print("TOO FAR")
+	return false
 
 func check_winner():
 	#you win if there are 3 dots on the board with 4 (player 1) or 5 (player 2)
@@ -118,7 +142,7 @@ func check_winner():
 			print("Player 1 Wins!")
 			get_tree().quit()
 		if(p2_count == 3):
-			print("Player 1 Wins!")
+			print("Player 2 Wins!")
 			get_tree().quit()
 	
 func create_dot(player, position):
