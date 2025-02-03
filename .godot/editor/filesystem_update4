@@ -1,8 +1,2 @@
 res://scenes/main.tscn
 res://scenes/main.gd
-res://scenes/purpleDot.tscn
-res://scenes/yellowHighlightDot.tscn
-res://scenes/purpleHighlightDot.tscn
-res://scenes/board.tscn
-res://scenes/yellowDot.tscn
-res://scenes/whiteHighlightDot.tscn

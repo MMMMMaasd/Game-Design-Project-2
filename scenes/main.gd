@@ -127,7 +127,7 @@ func switch_turn():
 		print("Player " + str(player) + " is blocked and skips their turn.")
 		player = -player
 	if if_init_dot_selected_1 || if_init_dot_selected_2:
-		remaining_moves = randi_range(1, 6)  # Random number of moves (1-6)
+		remaining_moves = 4
 		print("Player " + str(player) + "'s turn. Moves this turn: " + str(remaining_moves))
 
 func is_player_blocked(player) -> bool:
