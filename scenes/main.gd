@@ -26,6 +26,7 @@ var player_1_move: Node
 var player_2_move: Node
 var player_1_win: bool
 var player_2_win: bool
+var remaining_moves: int  # Tracks remaining moves for the current player
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	print(get_tree())
@@ -56,99 +57,100 @@ func _input(event: InputEvent) -> void:
 					for cross_point in cross_points:
 						if event.position.distance_to(cross_point) <= click_tolerance:
 							var target_pos = Vector2i(cross_point / cell_size)
+							if is_player_blocked(player):
+								print("Player " + str(player) + " is blocked and skips their turn.")
+								player = -player
 							if is_valid_move(target_pos):
 								sfx_move.play()
+								# Move player's current position
+								remaining_moves -= 1
 								if player == 1:
-									update_path(player, player_1_current_pos, cross_point)
+									draw_connect_line(player, player_1_current_pos, cross_point)
 									player_1_current_pos = cross_point
 									player_1_move.position = player_1_current_pos
-									print("Player 1 Moves")
+									print("Player 1 Moves - Moves remaining: " + str(remaining_moves))
 									if board_status[target_pos.y][target_pos.x] == 2:
 										board_status[target_pos.y][target_pos.x] = 4
 									else:
-										board_status[target_pos.y][target_pos.x] = 1
+										board_status[target_pos.y][target_pos.x] = player
 								else:
-									update_path(player, player_2_current_pos, cross_point)
+									draw_connect_line(player, player_2_current_pos, cross_point)
 									player_2_current_pos = cross_point
 									player_2_move.position = player_2_current_pos
-									print("Player 2 Moves")
+									print("Player 2 Moves - Moves remaining: " + str(remaining_moves))
 									if board_status[target_pos.y][target_pos.x] == 3:
 										board_status[target_pos.y][target_pos.x] = 5
 									else:
-										board_status[target_pos.y][target_pos.x] = -1
-								player = -player
+										board_status[target_pos.y][target_pos.x] = player
+								if remaining_moves == 0:
+									switch_turn()
 								for row in board_status:
 									print(row)
-								check_winner()
-								if is_player_blocked(player):
-									print("Player " + str(player) + " is blocked and skips their turn.")
-									player = -player
 							else:
 								sfx_wrong.play()
+							check_winner()
 				else:
+					# If statements to select starting dot
 					if player == 1:
 						for init_dot in init_dots_pos_1:
 							var target_dot = (init_dot / cell_size)
 							if event.position.distance_to(init_dot) <= click_tolerance:
+								sfx_move.play()
 								print("Player 1 Start")
-								if_init_dot_selected_1 = true
 								player_1_current_pos = init_dot
 								player_1_move = player_1_move_dot_scene.instantiate()
 								player_1_move.position = init_dot
 								add_child(player_1_move)
 								board_status[target_dot.y][target_dot.x] = 4
-								player = -player
+								switch_turn()
+								if_init_dot_selected_1 = true
 					else:
 						for init_dot in init_dots_pos_2:
 							var target_dot = (init_dot / cell_size)
 							if event.position.distance_to(init_dot) <= click_tolerance:
+								sfx_move.play()
 								print("Player 2 Start")
-								if_init_dot_selected_2 = true
 								player_2_current_pos = init_dot
 								player_2_move = player_2_move_dot_scene.instantiate()
 								player_2_move.position = init_dot
 								add_child(player_2_move)
 								board_status[target_dot.y][target_dot.x] = 5
-								player = -player
+								switch_turn()
+								if_init_dot_selected_2 = true
+	# Spacebar to end turn early
+	if event is InputEventKey:
+		if event.pressed and event.keycode == KEY_SPACE:
+			if if_init_dot_selected_1 and if_init_dot_selected_2:
+				print("Player " + str(player) + " ends their turn early.")
+				remaining_moves = 0
+				switch_turn()
 
+# Checks if move is valid
 func is_valid_move(target_pos) -> bool:
 	var current_pos = Vector2i(player_1_current_pos / cell_size) if player == 1 else Vector2i(player_2_current_pos / cell_size)
 	var dx = abs(target_pos.x - current_pos.x)
 	var dy = abs(target_pos.y - current_pos.y)
-	#print("current_pos: " + str(current_pos))
-	#print("target_pos: " + str(target_pos))
-	#print("dx: " + str(dx))
-	#print("dy: " + str(dy))
 	
-	# Check if the move is horizontal or vertical and within 1-3 spaces
-	if (dx == 0 and dy <= 3) or (dy == 0 and dx <= 3):
-		# Check if the path is clear and doesn't cross itself or the opponent's path
-		for i in range(1, max(dx, dy) + 1):
-			var check_pos = Vector2i(
-				current_pos.x + i * sign(target_pos.x - current_pos.x),
-				current_pos.y + i * sign(target_pos.y - current_pos.y)
-			)
-			if board_status[check_pos.y][check_pos.x] != 0 and board_status[check_pos.y][check_pos.x] != (2 if player == 1 else 3):
-				print("PATH BLOCKED")
-				return false
-		print("VALID")
-		return true
+	# Check if the move is to an adjacent cell (up, down, left, or right)
+	if (dx == 1 and dy == 0) or (dx == 0 and dy == 1):
+		# Check if the target cell is empty or the player's dot
+		if board_status[target_pos.y][target_pos.x] == 0 or board_status[target_pos.y][target_pos.x] == (2 if player == 1 else 3):
+			print("VALID")
+			return true
+		else:
+			print("PATH BLOCKED")
+			return false
 	print("TOO FAR")
 	return false
 
-func update_path(player, start_pos, end_pos):
-	var start_grid_pos = Vector2i(start_pos / cell_size)
-	var end_grid_pos = Vector2i(end_pos / cell_size)
-	var dx = end_grid_pos.x - start_grid_pos.x
-	var dy = end_grid_pos.y - start_grid_pos.y
-	var steps = max(abs(dx), abs(dy))
-	# Update only the cells between the start and end positions
-	for i in range(1, steps):  # Start from 1 to exclude the start cell
-		var x = start_grid_pos.x + i * sign(dx)
-		var y = start_grid_pos.y + i * sign(dy)
-		board_status[y][x] = 1 if player == 1 else -1
-	draw_connect_line(player, start_pos, end_pos)
+# Handles switching between players
+func switch_turn():
+	player = -player
+	if if_init_dot_selected_1 || if_init_dot_selected_2:
+		remaining_moves = 4
+		print("Player " + str(player) + "'s turn. Moves this turn: " + str(remaining_moves))
 
+# Checks if player has no valid moves, then skips their turn
 func is_player_blocked(player) -> bool:
 	var current_pos = Vector2i(player_1_current_pos / cell_size) if player == 1 else Vector2i(player_2_current_pos / cell_size)
 	var directions = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]

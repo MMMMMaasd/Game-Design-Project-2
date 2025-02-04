@@ -12,6 +12,7 @@ grow_vertical = 2
 script = ExtResource("1_cjssl")
 
 [node name="ColorRect2" type="ColorRect" parent="."]
+layout_mode = 0
 offset_left = 392.0
 offset_right = 432.0
 offset_bottom = 40.0
@@ -48,6 +49,7 @@ theme_override_font_sizes/font_size = 23
 text = "           PLAY           "
 
 [node name="RuleButton" type="Button" parent="."]
+layout_mode = 0
 offset_left = 302.0
 offset_top = 529.0
 offset_right = 500.0
