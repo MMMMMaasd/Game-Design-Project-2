@@ -9,6 +9,7 @@ extends Node2D
 @onready var sfx_move: AudioStreamPlayer = $sfx_move
 @onready var sfx_wrong: AudioStreamPlayer = $sfx_wrong
 @onready var sfx_win: AudioStreamPlayer = $sfx_win
+@export var play_instruction_label: CanvasLayer
 
 var grid_pos: Vector2i
 var player_1_current_pos: Vector2i
@@ -47,6 +48,21 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	var play_instruct_label = play_instruction_label.get_node("Label")
+	if if_init_dot_selected_1 and if_init_dot_selected_2:
+		if player == 1:
+			play_instruct_label.text = "YELLOW MOVE LEFT: " + str(remaining_moves)
+			play_instruct_label.modulate = Color(1, 1, 0)
+		else:
+			play_instruct_label.text = "PURPLE MOVE LEFT: " + str(remaining_moves)
+			play_instruct_label.modulate = Color(0.85, 0.6, 1)
+	else:
+		if player == 1:
+			play_instruct_label.text = "YELLOW SELECT START DOT"
+			play_instruct_label.modulate = Color(1, 1, 0)
+		else:
+			play_instruct_label.text = "PURPLE SELECT START DOT"
+			play_instruct_label.modulate = Color(0.85, 0.6, 1)
 	pass
 
 func _input(event: InputEvent) -> void:
