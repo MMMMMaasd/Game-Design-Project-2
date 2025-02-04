@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bt1bbp23jepsr"]
+[gd_scene load_steps=3 format=3 uid="uid://bt1bbp23jepsr"]
 
 [ext_resource type="Script" path="res://scenes/purple_win.gd" id="1_gqg3b"]
+[ext_resource type="AudioStream" uid="uid://bj8r1ey6kobmm" path="res://sfx/sfx_win.ogg" id="2_he8qg"]
 
 [node name="PurpleWin" type="Control"]
 layout_mode = 3
@@ -12,12 +13,14 @@ grow_vertical = 2
 script = ExtResource("1_gqg3b")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 scale = Vector2(19.72, 19.6505)
 color = Color(0.415686, 0.0980392, 0.545098, 0.423529)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
 offset_left = 225.0
 offset_top = 350.0
 offset_right = 582.0
@@ -30,6 +33,7 @@ text = "Purple Stars Dominate!
  "
 
 [node name="Button2" type="Button" parent="."]
+layout_mode = 0
 offset_left = 224.0
 offset_top = 520.0
 offset_right = 581.0
@@ -37,11 +41,15 @@ offset_bottom = 551.0
 text = "RETURN MENU"
 
 [node name="Button" type="Button" parent="."]
+layout_mode = 0
 offset_left = 225.0
 offset_top = 455.0
 offset_right = 582.0
 offset_bottom = 486.0
 text = "PLAY AGAIN"
+
+[node name="sfx_win" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_he8qg")
 
 [connection signal="pressed" from="Button2" to="." method="_on_button_2_pressed"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

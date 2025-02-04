@@ -1,5 +1,8 @@
 extends Control
+@onready var sfx_win: AudioStreamPlayer = $sfx_win
 
+func _ready() -> void:
+	sfx_win.play()
 
 func _on_button_2_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/start.tscn")

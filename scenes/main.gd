@@ -6,6 +6,10 @@ extends Node2D
 @export var purple_dot_scene: PackedScene
 @export var player_1_move_dot_scene: PackedScene
 @export var player_2_move_dot_scene: PackedScene
+@onready var sfx_move: AudioStreamPlayer = $sfx_move
+@onready var sfx_wrong: AudioStreamPlayer = $sfx_wrong
+@onready var sfx_win: AudioStreamPlayer = $sfx_win
+
 var grid_pos: Vector2i
 var player_1_current_pos: Vector2i
 var player_2_current_pos: Vector2i
@@ -53,6 +57,7 @@ func _input(event: InputEvent) -> void:
 						if event.position.distance_to(cross_point) <= click_tolerance:
 							var target_pos = Vector2i(cross_point / cell_size)
 							if is_valid_move(target_pos):
+								sfx_move.play()
 								if player == 1:
 									update_path(player, player_1_current_pos, cross_point)
 									player_1_current_pos = cross_point
@@ -78,6 +83,8 @@ func _input(event: InputEvent) -> void:
 								if is_player_blocked(player):
 									print("Player " + str(player) + " is blocked and skips their turn.")
 									player = -player
+							else:
+								sfx_wrong.play()
 				else:
 					if player == 1:
 						for init_dot in init_dots_pos_1:

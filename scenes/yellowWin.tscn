@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dqd1m05pyiea6"]
+[gd_scene load_steps=3 format=3 uid="uid://dqd1m05pyiea6"]
 
 [ext_resource type="Script" path="res://scenes/yellow_win.gd" id="1_770b4"]
+[ext_resource type="AudioStream" uid="uid://bj8r1ey6kobmm" path="res://sfx/sfx_win.ogg" id="2_c333j"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -12,6 +13,7 @@ grow_vertical = 2
 script = ExtResource("1_770b4")
 
 [node name="ColorRect2" type="ColorRect" parent="."]
+layout_mode = 0
 offset_left = 4.0
 offset_right = 44.0
 offset_bottom = 40.0
@@ -32,6 +34,7 @@ text = "Yellow Stars Dominate!
  "
 
 [node name="Button2" type="Button" parent="."]
+layout_mode = 0
 offset_left = 224.0
 offset_top = 520.0
 offset_right = 581.0
@@ -45,6 +48,9 @@ offset_top = 455.0
 offset_right = 582.0
 offset_bottom = 486.0
 text = "PLAY AGAIN"
+
+[node name="sfx_win" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_c333j")
 
 [connection signal="pressed" from="Button2" to="." method="_on_button_2_pressed"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

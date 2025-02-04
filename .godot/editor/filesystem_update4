@@ -6,3 +6,7 @@ res://scenes/purpleHighlightDot.tscn
 res://scenes/board.tscn
 res://scenes/yellowDot.tscn
 res://scenes/whiteHighlightDot.tscn
+res://scenes/purpleWin.tscn
+res://scenes/purple_win.gd
+res://scenes/yellowWin.tscn
+res://scenes/yellow_win.gd
