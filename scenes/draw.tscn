@@ -12,12 +12,14 @@ grow_vertical = 2
 script = ExtResource("1_y1xfo")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 scale = Vector2(19.72, 19.6505)
 color = Color(0.284916, 0.287419, 0.294275, 0.423529)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
 offset_left = 220.0
 offset_top = 350.0
 offset_right = 590.0
