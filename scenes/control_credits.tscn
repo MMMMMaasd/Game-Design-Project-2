@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://broqm715jb1cg"]
+
+[ext_resource type="Script" path="res://scenes/control_credits.gd" id="1_n8xml"]
+
+[node name="ControlAndCredits" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_n8xml")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 45.0
+offset_top = 180.0
+offset_right = 757.0
+offset_bottom = 583.0
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Controls:
+Use mouse press for both players
+
+Rules:
+1. Each player starts from one of their assigned dots and builds outward. 
+2. Movement can be horizontal or vertical but not diagonal.
+3. Players must connect their assigned dots in any order but as a continuous path.
+4. No intersection: A player’s path cannot cross itself or the opponent’s path.
+5. The first player to successfully connect all their assigned dots wins.
+
+Credits:
+Michael Bian
+Elizabeth Castroverde 
+Brian Oh"
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 601.0
+offset_top = 708.0
+offset_right = 750.0
+offset_bottom = 739.0
+text = "RETURN TO MENU"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

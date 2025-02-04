@@ -24,6 +24,7 @@ var player_1_win: bool
 var player_2_win: bool
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	print(get_tree())
 	if_init_dot_selected_1 = false
 	if_init_dot_selected_2 = false
 	player = 1
@@ -163,10 +164,10 @@ func check_winner():
 				p2_count += 1
 		if p1_count == 3:
 			print("Player 1 Wins!")
-			get_tree().quit()
+			call_deferred("change_scene", "res://scenes/yellowWin.tscn") 
 		if p2_count == 3:
 			print("Player 2 Wins!")
-			get_tree().quit()
+			call_deferred("change_scene", "res://scenes/purpleWin.tscn") 
 
 func create_dot(player, position):
 	if player == 1:
@@ -178,6 +179,10 @@ func create_dot(player, position):
 		new_dot.position = position
 		add_child(new_dot)
 
+func change_scene(scene_path: String):
+	if get_tree():
+		get_tree().change_scene_to_file(scene_path)
+		
 func init_dots(): #make sure that points don't form on the border
 	var player = 1
 	for i in range(6):

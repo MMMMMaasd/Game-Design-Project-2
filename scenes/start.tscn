@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhw5oe518c15g"]
+
+[ext_resource type="Script" path="res://scenes/start.gd" id="1_cjssl"]
+
+[node name="StartMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cjssl")
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+offset_left = 392.0
+offset_right = 432.0
+offset_bottom = 40.0
+scale = Vector2(9.88, 19.64)
+color = Color(0.428896, 0.230444, 0.00867128, 0.423529)
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(9.8, 19.6505)
+color = Color(0.415686, 0.0980392, 0.545098, 0.423529)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 303.0
+offset_top = 346.0
+offset_right = 487.0
+offset_bottom = 439.0
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Galaxy Dots
+ "
+
+[node name="PlayButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 302.0
+offset_top = 470.0
+offset_right = 497.0
+offset_bottom = 510.0
+theme_override_font_sizes/font_size = 23
+text = "           PLAY           "
+
+[node name="RuleButton" type="Button" parent="."]
+offset_left = 302.0
+offset_top = 529.0
+offset_right = 500.0
+offset_bottom = 569.0
+theme_override_font_sizes/font_size = 23
+text = "RULES & CREDITS"
+
+[connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="RuleButton" to="." method="_on_rule_button_pressed"]
