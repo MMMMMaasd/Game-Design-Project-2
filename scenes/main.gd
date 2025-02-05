@@ -27,9 +27,11 @@ var player_1_move: Node
 var player_2_move: Node
 var player_1_win: bool
 var player_2_win: bool
+var if_player_1_first_round: bool
 var remaining_moves: int  # Tracks remaining moves for the current player
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if_player_1_first_round = false
 	print(get_tree())
 	if_init_dot_selected_1 = false
 	if_init_dot_selected_2 = false
@@ -113,6 +115,7 @@ func _input(event: InputEvent) -> void:
 							if event.position.distance_to(init_dot) <= click_tolerance:
 								sfx_move.play()
 								print("Player 1 Start")
+								if_player_1_first_round = true
 								player_1_current_pos = init_dot
 								player_1_move = player_1_move_dot_scene.instantiate()
 								player_1_move.position = init_dot
@@ -163,7 +166,14 @@ func is_valid_move(target_pos) -> bool:
 func switch_turn():
 	player = -player
 	if if_init_dot_selected_1 || if_init_dot_selected_2:
-		remaining_moves = 4
+		if player == 1:
+			if if_player_1_first_round:
+				remaining_moves = 2
+				if_player_1_first_round = false
+			else:
+				remaining_moves = 4
+		else:
+			remaining_moves = 4
 		print("Player " + str(player) + "'s turn. Moves this turn: " + str(remaining_moves))
 
 # Checks if player has no valid moves, then skips their turn
